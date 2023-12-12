@@ -18,10 +18,12 @@ function basePath($path='')
  * @param string $name
  * @ return void
  */
-function loadView($name)
+function loadView($name, $data=[])
 {
     $viewPath = basePath("views/{$name}.view.php");
     if (file_exists($viewPath)) {
+        // get the data value from the array
+        extract($data);
         require $viewPath;
     } else {
         echo "View '{$name} not found !'";
