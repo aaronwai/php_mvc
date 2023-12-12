@@ -1,0 +1,16 @@
+{
+  "name": "aaronwai/php_mvc",
+  "description": "PHP Project",
+  "authors": [
+    {
+      "name": "aaron wai",
+      "email": "aaron@aaronwai.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Framework\\": "Framework/",
+      "App\\": "App/"
+    }
+  }
+}
