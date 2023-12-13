@@ -82,16 +82,47 @@ class Router {
      * @return void
      *  
      */
-    public function route($uri, $method) {
-        foreach($this->routes as $route) {
-            if ($route['uri'] === $uri && $route['method'] === $method) {
-                // extract controller and controller method
-                $controller = 'App\\Controllers\\' . $route['controller'];
-                $controllerMethod = $route['controllerMethod'];
-                // Instatiate the controller and call the method
-                $controllerInstance = new $controller();
-                $controllerInstance->$controllerMethod();
-                return;
+    public function route($uri) {
+        $requestMethod = $_SERVER['REQUEST_METHOD'];
+
+        foreach ($this->routes as $route) {
+
+            // split the current URI into segments
+            $uriSegments = explode('/', trim($uri,'/'));
+
+            // split the current URI into segments, this is defined in the routes.php
+            $routeSegments = explode('/', trim($route['uri'],'/')); 
+
+            $match = true;
+
+            // check if the number of segments matches
+            if (count($uriSegments) === count($routeSegments) && strtoupper($route['method'] === $requestMethod)) {
+                
+                $params = [];
+                
+                $match = true;
+                
+                for ($i = 0; $i < count($uriSegments); $i++) {
+                    // if the uri's do not match and there is no param 
+                    if ($routeSegments[$i] !== $uriSegments[$i] && !preg_match('/\{(.+?)\}/', $routeSegments[$i])) {
+                        $match = false;
+                        break;
+                    }
+
+                    // check for the param and add to $params array
+                    if (preg_match('/\{(.+?)\}/', $routeSegments[$i],$matches)) {
+                        $params[$matches[1]] = $uriSegments[$i];
+                    }
+                }
+
+                if ($match) {
+
+                    $controller = 'App\\Controllers\\' . $route['controller'];
+                    $controllerMethod = $route['controllerMethod'];
+                    $controllerInstance = new $controller();
+                    $controllerInstance->$controllerMethod($params);
+                    return;
+                }
             }
         }
         ErrorController::notFound();
