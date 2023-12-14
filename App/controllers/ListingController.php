@@ -63,19 +63,40 @@ class ListingController {
         $errors = [];
         //  check empty and not string for required fields, then put error message 
         foreach ($requiredFields as $field) {
-         if (empty($newListingData[$field]) || !Validation::string($newListingData[$field])) {
-             $errors[$field] = ucfirst($field) . ' is required';
+            if (empty($newListingData[$field]) || !Validation::string($newListingData[$field])) {
+                $errors[$field] = ucfirst($field) . ' is required';
             }
         }
 
         if (!empty($errors)) {
-      // Reload view with errors, and keep the input passing back to the form
-         loadView('listings/create', [
-          'errors' => $errors,
-          'listing' => $newListingData]);
+            // Reload view with errors, and keep the input passing back to the form
+            loadView('listings/create', [
+            'errors' => $errors,
+            'listing' => $newListingData]);
         } else {
       // Submit data
-         echo "Success";
-        }    
+        $fields = [];
+        // add field names into fields array
+        foreach($newListingData as $field => $value) {
+            $fields[] = $field;
+        }
+        $fields = implode(', ', $fields); 
+
+        $values = [];
+        // add field names into fields array
+        foreach($newListingData as $field => $value) {
+            // convert empty strings to null
+            if ($value === '') {
+                $newListingData[$field] = null;
+            }
+            $values[] = ':' . $field;
+        }
+        $values = implode(', ', $values); 
+        $query = "INSERT INTO listings ({$fields}) VALUES ({$values})";
+        $this->db->query($query, $newListingData);
+
+        // add redirect to a given url 
+        redirect('/listings');
+        }
     }
 }    
