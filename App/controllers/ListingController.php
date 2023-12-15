@@ -26,6 +26,12 @@ class ListingController {
         loadView('listings/create');
     }
 
+    /**
+     *  show a single listing
+     * 
+     * @param array $params
+     * @return void
+     */
     public function show($params) {
         $id = $params['id'] ?? '';
 
@@ -98,5 +104,27 @@ class ListingController {
         // add redirect to a given url 
         redirect('/listings');
         }
+    }
+
+    /**
+     * Delete a listing
+     * 
+     * @param array $params
+     * @return void
+     */
+    public function destroy($params){
+        // check the id exist then delete
+        $id = $params['id'];
+        $params = ['id' => $id];
+        $listing = $this->db->query('SELECT * FROM listings WHERE id= :id', $params)->fetch();
+        if (! $listing) {
+            ErrorController::notFound('Listing not found !');
+            return;
+        }
+        $this->db->query('DELETE FROM listings WHERE id = :id', $params);
+
+        //  add flash message
+        $_SESSION['success_message'] = 'Listing successfully deleted !';
+        redirect('/listings');
     }
 }    
