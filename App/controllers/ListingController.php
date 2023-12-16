@@ -164,6 +164,7 @@ class ListingController {
             return;
         } 
         $allowedFields = ['title', 'description', 'salary', 'tags', 'company', 'address', 'city', 'state', 'phone', 'email', 'requirements', 'benefits'];
+        $updateValues = [];
         $updateValues = array_intersect_key($_POST, array_flip($allowedFields));
         $updateValues = array_map('sanitize', $updateValues);
         $requiredFields = ['title', 'description', 'salary', 'email', 'city', 'state'];
@@ -178,7 +179,7 @@ class ListingController {
             // Reload view with errors, and keep the input passing back to the form
             loadView('listings/edit', [
             'errors' => $errors,
-            'listing' => $updateValues]);
+            'listing' => $listing]);
             exit;
         } else {
             $updateFields = [];

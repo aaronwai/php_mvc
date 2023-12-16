@@ -10,5 +10,9 @@ $router->post('/listings', 'ListingController@store');
 $router->put('/listings/{id}', 'ListingController@update');
 $router->delete('/listings/{id}', 'ListingController@destroy');
 
+// this part to view page
 $router->get('/auth/register', 'UserController@create');
 $router->get('/auth/login', 'UserController@login');
+
+// this part to controller 
+$router->post('/auth/register','UserController@store');
