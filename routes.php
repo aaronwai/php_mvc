@@ -13,6 +13,8 @@ $router->delete('/listings/{id}', 'ListingController@destroy');
 // this part to view page
 $router->get('/auth/register', 'UserController@create');
 $router->get('/auth/login', 'UserController@login');
-
+// for debug purpose
+// $router->get('/auth/logout','UserController@logout');
 // this part to controller 
 $router->post('/auth/register','UserController@store');
+$router->post('/auth/logout','UserController@logout');
